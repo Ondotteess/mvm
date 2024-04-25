@@ -3,32 +3,42 @@
 
 using namespace std;
 
+double derivative(double initial) {
+    return 1 / (cos(initial) * cos(initial)) - 1; 
+}
+
 double func(double x) {
     return tan(x) - x;
 }
 
-double fi(double x) {
+double fi(double x, double lamb) {
+    return x - lamb * (tan(x) - x);
+}
+
+double gi(double x, double x1 = 0) {
     return x - func(x);
 }
 
-double gi(double x) {
-    return x - func(x) * (1 / (1 / pow(cos(x), 2))); // Сжимающее отображение
+double iterations(double x0, double eps) {
+    double lamb = 1 / derivative(x0); 
+
+    double x1 = fi(x0, lamb);
+
+    int counter = 0;
+    while (fabs(x1 - fi(x1, lamb)) > eps) {
+        x1 = fi(x1, lamb);
+        counter++;
+    }
+
+    return x1;
 }
 
 int main() {
-    double x0 = 7;
+    double initial = -1;
+    double eps = 0.00001;
 
-    double eps = 1e-10;
-
-    double x = x0;
-    int iter = 0;
-    while (fabs(func(x)) > eps) {
-        x = fi(x);
-        iter++;
-    }
-
-    cout << "Solution: " << x << endl;
-    cout << "Number of iterations: " << iter << endl;
+    auto result = iterations(initial, eps);
+    cout << "Solution: " << result << endl;
 
     return 0;
 }
