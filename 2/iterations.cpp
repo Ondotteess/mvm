@@ -3,36 +3,28 @@
 
 using namespace std;
 
-double nextIteration(double x) {
-    return atan(x); 
+double func(double x) {
+    return tan(x) - x;
 }
 
-bool isConverged(double x1, double x2, double epsilon) {
-    return abs(x1 - x2) < epsilon;
-}
-
-double solveEquation(double initialGuess, double epsilon, int maxIterations) {
-    double x0 = initialGuess;
-    double x1 = nextIteration(x0);
-    int iterations = 1;
-
-    while (!isConverged(x0, x1, epsilon) && iterations < maxIterations) {
-        x0 = x1;
-        x1 = nextIteration(x0);
-        iterations++;
-    }
-
-    return x1;
+double fi(double x) {
+    return x - func(x);
 }
 
 int main() {
-    double initialGuess = 1.0;
-    double epsilon = 1e-6;
-    int maxIterations = 1000;
+    double x0 = 1;
 
-    double solution = solveEquation(initialGuess, epsilon, maxIterations);
+    double eps = 1e-10;
 
-    cout << "Solution: " << solution << endl;
+    double x = x0;
+    int iter = 0;
+    while (fabs(func(x)) > eps) {
+        x = fi(x);
+        iter++;
+    }
+
+    cout << "Solution: " << x << endl;
+    cout << "Number of iterations: " << iter << endl;
 
     return 0;
 }
