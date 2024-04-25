@@ -11,8 +11,12 @@ double fi(double x) {
     return x - func(x);
 }
 
+double gi(double x) {
+    return x - func(x) * (1 / (1 / pow(cos(x), 2))); // Сжимающее отображение
+}
+
 int main() {
-    double x0 = 1;
+    double x0 = 7;
 
     double eps = 1e-10;
 
