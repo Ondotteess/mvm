@@ -41,9 +41,11 @@ int determineRoot(const complex<double>& z, double eps, int iters) {
         return 0; 
 }
 
+
 int main() {
     double eps = 1e-6;
     int iters = 1000;
+    const int area = 50;
 
     double x_min = -2.0;
     double x_max = 2.0;
@@ -51,58 +53,24 @@ int main() {
     double y_max = 2.0;
     double step = 0.1;
 
-    double root1_min_x = numeric_limits<double>::max();
-    double root1_max_x = numeric_limits<double>::lowest();
-    double root1_min_y = numeric_limits<double>::max();
-    double root1_max_y = numeric_limits<double>::lowest();
+    int root_region[area][area];
 
-    double root2_min_x = numeric_limits<double>::max();
-    double root2_max_x = numeric_limits<double>::lowest();
-    double root2_min_y = numeric_limits<double>::max();
-    double root2_max_y = numeric_limits<double>::lowest();
-
-    double root3_min_x = numeric_limits<double>::max();
-    double root3_max_x = numeric_limits<double>::lowest();
-    double root3_min_y = numeric_limits<double>::max();
-    double root3_max_y = numeric_limits<double>::lowest();
-
-    for (double x = x_min; x <= x_max; x += step) {
-        for (double y = y_min; y <= y_max; y += step) {
+    for (int i = 0; i < area; i++) {
+        double x = x_min + i * step;
+        for (int j = 0; j < area; j++) {
+            double y = y_min + j * step;
             complex<double> init_point(x, y);
-            int root = determineRoot(init_point, eps, iters);
-
-            if (root == 1) {
-                if (x < root1_min_x) root1_min_x = x;
-                if (x > root1_max_x) root1_max_x = x;
-                if (y < root1_min_y) root1_min_y = y;
-                if (y > root1_max_y) root1_max_y = y;
-            }
-            else if (root == 2) {
-                if (x < root2_min_x) root2_min_x = x;
-                if (x > root2_max_x) root2_max_x = x;
-                if (y < root2_min_y) root2_min_y = y;
-                if (y > root2_max_y) root2_max_y = y;
-            }
-            else if (root == 3) {
-                if (x < root3_min_x) root3_min_x = x;
-                if (x > root3_max_x) root3_max_x = x;
-                if (y < root3_min_y) root3_min_y = y;
-                if (y > root3_max_y) root3_max_y = y;
-            }
+            root_region[i][j] = determineRoot(init_point, eps, iters);
         }
     }
 
-
-    cout << "Approximate boundaries of attraction regions for roots of z^3 - 1:\n";
-
-    cout << "Root 1: x = [" << root1_min_x << ", " << root1_max_x << "], y = [" 
-        << root1_min_y << ", " << root1_max_y << "]\n";
-
-    cout << "Root 2: x = [" << root2_min_x << ", " << root2_max_x << "], y = [" 
-        << root2_min_y << ", " << root2_max_y << "]\n";
-
-    cout << "Root 3: x = [" << root3_min_x << ", " << root3_max_x << "], y = [" 
-        << root3_min_y << ", " << root3_max_y << "]\n";
+    cout << "Approximate regions of attraction for roots of z^3 - 1:\n";
+    for (int i = 0; i < area; i++) {
+        for (int j = 0; j < area; j++) {
+            cout << root_region[i][j] << " ";
+        }
+        cout << endl;
+    }
 
     return 0;
 }
