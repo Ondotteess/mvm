@@ -3,34 +3,33 @@
 
 using namespace std;
 
-double equationFunction(double x) {
+double func(double x) {
     return tan(x) - x;
 }
 
-double secantMethod(double x0, double x1, double epsilon, int maxIterations) {
-    double x = x1;
-    double xPrev = x0;
-    int iterations = 0;
+double secnat(double x0, double x1, double delta) {
+    double xn_1 = x0;
+    double xn = x1;
 
-    while (fabs(equationFunction(x)) > epsilon && iterations < maxIterations) {
-        double temp = x;
-        x = x - equationFunction(x) * (x - xPrev) / (equationFunction(x) - equationFunction(xPrev));
-        xPrev = temp;
-        iterations++;
+    int counter = 0;
+    while (fabs(xn_1 - xn) > delta) {
+        double next = xn - func(xn) * (xn - xn_1) / (func(xn) - func(xn_1));
+        xn_1 = xn;
+        xn = next;
+        counter++;
     }
-
-    return x;
+    return xn;
 }
 
+
 int main() {
-    double initialGuess1 = 1.0; 
-    double initialGuess0 = 0.5;
-    double epsilon = 1e-6; 
-    int maxIterations = 1000; 
+    double x0 = 4.45;
+    double x1 = 4.5;
 
-    double solution = secantMethod(initialGuess0, initialGuess1, epsilon, maxIterations);
+    double eps = 1e-6;
 
-    cout << "Solution: " << solution << endl;
+    auto result = secnat(x0, x1, eps);
+    cout << "Solution: " << result << endl;
 
     return 0;
 }
