@@ -3,34 +3,33 @@
 
 using namespace std;
 
-double equationFunction(double x) {
+double func(double x) {
     return tan(x) - x;
 }
 
-double derivativeFunction(double x) {
+double der(double x) {
     return pow(1 / cos(x), 2) - 1;
 }
 
-double newtonMethod(double initialGuess, double epsilon, int maxIterations) {
-    double x = initialGuess;
-    int iterations = 0;
+double newton(double init, double eps, int minters) {
+    double x = init;
+    int iters = 0;
 
-    while (fabs(equationFunction(x)) > epsilon && iterations < maxIterations) {
-        x = x - equationFunction(x) / derivativeFunction(x);
-        iterations++;
+    while (fabs(func(x)) > eps && iters < minters) {
+        x = x - func(x) / der(x);
+        iters++;
     }
 
     return x;
 }
 
 int main() {
-    double initialGuess = 1.0; 
-    double epsilon = 1e-6;
-    int maxIterations = 1000; 
+    double init = 1.0;
+    double eps = 1e-6;
+    int iters= 1000;
 
-    double solution = newtonMethod(initialGuess, epsilon, maxIterations);
 
-    cout << "Solution: " << solution << endl;
+    cout << "Solution: " << newton(init, eps, iters) << endl;
 
     return 0;
 }
