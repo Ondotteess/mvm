@@ -1,60 +1,97 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def func(x):
-    return 1 / (1 + 25 * x**2)
 
-def lagrange_basis(x_values, i, x):
-    basis = 1
-    for j in range(len(x_values)):
-        if j != i:
-            basis *= (x - x_values[j]) / (x_values[i] - x_values[j])
-    return basis
+def f(x):
+    return 1 / (1 + 25 * x ** 2)
 
-def lagrange_interpolation(x_values, y_values, x):
+
+def Pn(x, xi, fi):
+    n = len(xi)
     result = 0
-    for i in range(len(x_values)):
-        result += y_values[i] * lagrange_basis(x_values, i, x)
+    for i in range(n):
+        term = fi[i]
+        for j in range(n):
+            if j != i:
+                term *= (x - xi[j]) / (xi[i] - xi[j])
+        result += term
     return result
 
-def chebyshev_nodes(n):
-    nodes = np.zeros(n)
-    for i in range(n):
-        nodes[i] = np.cos(np.pi * (2 * i + 1) / (2 * n))
-    return nodes
 
-x_values = np.linspace(-1, 1, 1000)
+def chebyshev_roots(n):
+    return np.cos((2 * np.arange(1, n + 1) - 1) * np.pi / (2 * n))
 
-mode = "chebyshev"
-#mode = "default"
-for n in range(3, 11):
 
-    if mode == "default":
-        xi = np.linspace(-1, 1, n)
-        yi = func(xi)
-        interpolated_y = [lagrange_interpolation(xi, yi, x) for x in x_values]
-        plt.figure(figsize=(8, 6))
-        plt.plot(x_values, interpolated_y, label=f'Interpolated Polynomial (n={n}) - Uniform Nodes', color='blue')
-        plt.plot(x_values, func(x_values), label='Original Function', color='green', linewidth=2)
-        plt.scatter(xi, func(xi), color='red')
-        plt.xlabel('x')
-        plt.ylabel('y')
-        plt.title(f'Interpolated Polynomial vs Original Function (n={n})')
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+def difference(is_chebyshev: bool = False, show_difference: bool = True):
+    plt.figure(figsize=(10, 6))
 
-    elif mode == "chebyshev":
-        xi_chebyshev = chebyshev_nodes(n)
-        yi_chebyshev = func(xi_chebyshev)
-        interpolated_y_chebyshev = [lagrange_interpolation(xi_chebyshev, yi_chebyshev, x) for x in x_values]
-        plt.figure(figsize=(8, 6))
-        plt.plot(x_values, interpolated_y_chebyshev, label=f'Interpolated Polynomial (n={n}) - Chebyshev Nodes', color='blue')
-        plt.plot(x_values, func(x_values), label='Original Function', color='green', linewidth=2)
-        plt.scatter(xi_chebyshev, func(xi_chebyshev), color='red')
-        plt.xlabel('x')
-        plt.ylabel('y')
-        plt.title(f'Interpolated Polynomial vs Original Function (n={n}) ')
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+    for i in range(3, 11):
+        if is_chebyshev:
+            xi_cheb = chebyshev_roots(i)
+        else:
+            xi_cheb = np.linspace(-1, 1, i)
+
+        fi_cheb = f(xi_cheb)
+        x_values = np.linspace(-1, 1, 1000)
+        y_values_Pn_cheb = Pn(x_values, xi_cheb, fi_cheb)
+
+        if not show_difference: plt.plot(x_values, y_values_Pn_cheb, label='Pn(x) (n={})'.format(i))
+
+        x_values_f = np.linspace(-1, 1, 1000)
+        y_values_f = f(x_values_f)
+        if not show_difference: plt.plot(x_values_f, y_values_f, label='f(x)', color='black')
+
+        absolute_error = np.abs(y_values_Pn_cheb - y_values_f)
+        if show_difference: plt.plot(x_values, absolute_error, label=f'|P{i}(x) - f(x)|')
+
+
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title('f(x) and Pn(x)')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+def max_errors():
+    max_errors_uniform = []
+    max_errors_chebyshev = []
+
+    for i in range(3, 11):
+        xi_uniform = np.linspace(-1, 1, i)
+        xi_cheb = chebyshev_roots(i)
+
+        fi_uniform = f(xi_uniform)
+        fi_cheb = f(xi_cheb)
+
+        x_values = np.linspace(-1, 1, 1000)
+
+        y_values_Pn_uniform = Pn(x_values, xi_uniform, fi_uniform)
+        y_values_Pn_cheb = Pn(x_values, xi_cheb, fi_cheb)
+
+        absolute_errors_uniform = np.abs(y_values_Pn_uniform - f(x_values))
+        absolute_errors_chebyshev = np.abs(y_values_Pn_cheb - f(x_values))
+
+        max_errors_uniform.append(np.max(absolute_errors_uniform))
+        max_errors_chebyshev.append(np.max(absolute_errors_chebyshev))
+
+    plt.figure(figsize=(10, 6))
+
+    plt.plot(range(3, 11), max_errors_uniform, label='Uniform Nodes')
+    plt.plot(range(3, 11), max_errors_chebyshev, label='Chebyshev Nodes')
+
+    plt.xlabel('Number of Interpolation Points')
+    plt.ylabel('Max Absolute Error')
+    plt.title('Max Absolute Error vs Number of Interpolation Points')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+if __name__ == "__main__":
+    show_error = False
+    is_chebyshev = True
+    show_difference = True
+    if show_error:
+        max_errors()
+    else:
+        difference(is_chebyshev, show_difference)
