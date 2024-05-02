@@ -22,10 +22,12 @@ int main() {
     std::cout << epsilon_double << std::endl;
 
     //bias = 2^(w-1) - 1 
-
+    //xnorm = (-1)^s * (1+M/2^n) * 2^(E+1-2^(w-1))
+    //xsubnorn = (-1)^s * (M/2^n)*2^(2-2^(w-1))
+    
     std::cout << "W for float: " << 32 - counter_float - 1 << std::endl;
-    //  Emax  =  2^2^7 - 1  =  2^(127) - 1
-    //  Emin  = -2^(127) + 2
+    //  Emax  =  2^2^7 - 1  =  2^(127) 
+    //  Emin  = 2^(-149)  (subnorm)
 
     float a = 1;
     for (int i = 0; i < 128; i++) {
@@ -35,8 +37,8 @@ int main() {
 
 
     std::cout << "W for double: " << 64 - counter_double << std::endl;
-    //  Emax  =>  2^(1023) - 1
-    //  Emin  =>  -2^(1023) + 2
+    //  Emax  =>  2^(1023) 
+    //  Emin  =>  2^(1022-52) (subnorm)
 
     double b = 1;
     for (int i = 0; i < 1024; i++) {
@@ -63,7 +65,7 @@ int main() {
 
 
     std::cout << (1 + epsilon_float < 1 + epsilon_float + epsilon_float / 2)
-        << std::endl;
+        << std::endl;        // Округление
 
 
     return 0;
