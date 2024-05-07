@@ -4,12 +4,10 @@ CORR = 0.00001
 MAX_ITERATIONS = 1_000_000
 
 def sgn(x: float):
-    if x > 0:
+    if x >= 0:
         return 1
-    elif x < 0:
-        return -1
     else:
-        return 0
+        return -1
 
 
 def func(x: float) -> float:
@@ -17,7 +15,7 @@ def func(x: float) -> float:
 
 
 def fi(x: float) -> float:
-    return x - 0.0001 * func(x)
+    return x - 0.001 * func(x)
 
 
 def der(x: float) -> float:
@@ -47,10 +45,10 @@ def bisection_method(interval, epsilon=0.0001) -> tuple:  # works
     return root, iterations
 
 
-def iterations(num: int, interval: tuple, eps: float = 0.00001) -> tuple:    # need to debug
+def iterations(num: int, interval: tuple, eps: float = 0.0000001) -> tuple:
     iters = 0
 
-    x0 = sgn(num) * ((pi/2 - CORR) + abs(num) * pi)
+    x0 = sgn(num) * ((pi/2 - 0.1) + abs(num) * pi)
     x1 = fi(x0)
 
     while iters < MAX_ITERATIONS:
@@ -87,10 +85,9 @@ def secant(num: int, interval: tuple, eps: float = 0.0000001) -> tuple:
     x1 = x0 - sgn(num) * 0.001
     iters = 0
 
-    while iters < 15:
+    while iters < MAX_ITERATIONS:
         if func(x1) - func(x0) == 0:
-            print("func(x1) - func(x0) == 0. Zero division error")
-            return ()
+            return x1, iters
 
         x2 = x1 - func(x1) * (x1 - x0) / (func(x1) - func(x0))
         x0, x1 = x1, x2
@@ -102,15 +99,15 @@ def secant(num: int, interval: tuple, eps: float = 0.0000001) -> tuple:
 def newton_complex():
     pass
 
-for num in range(-3, 4):
+for num in range(-15, 16):
     interval = get_interval(num)
-    if (num != 0):
-        root_simple_iter, iterations_simple_iter = iterations(num, interval)
-        root_newton, iterations_root_newton = newton(num, interval)
-        root_bisection, iterations_bisection = bisection_method(interval)
-        root_secnat, iterations_secnat = secant(num, interval)
-        print(f"Iterations: Root = {root_simple_iter}, Iters = {iterations_simple_iter}")
-        print(f"Bisection: Root = {root_bisection}, Iters = {iterations_bisection}")
-        print(f"Newton: Root = {root_newton}, Iters = {iterations_root_newton}")
-        print(f"Secnat: Root = {root_secnat}, Iters = {iterations_secnat}")
-        print("")
+
+    root_simple_iter, iterations_simple_iter = iterations(num, interval)
+    root_newton, iterations_root_newton = newton(num, interval)
+    root_bisection, iterations_bisection = bisection_method(interval)
+    root_secnat, iterations_secnat = secant(num, interval)
+    print(f"Iterations: Root = {root_simple_iter}, Iters = {iterations_simple_iter}")
+    print(f"Bisection: Root = {root_bisection}, Iters = {iterations_bisection}")
+    print(f"Newton: Root = {root_newton}, Iters = {iterations_root_newton}")
+    print(f"Secnat: Root = {root_secnat}, Iters = {iterations_secnat}")
+    print("")
