@@ -25,7 +25,7 @@ def chebyshev_roots(n):
 def difference(is_chebyshev: bool = False, show_difference: bool = True):
     plt.figure(figsize=(10, 6))
 
-    for i in range(3, 11):
+    for i in range(5, 11):
         if is_chebyshev:
             xi_cheb = chebyshev_roots(i)
         else:
@@ -35,14 +35,17 @@ def difference(is_chebyshev: bool = False, show_difference: bool = True):
         x_values = np.linspace(-1, 1, 1000)
         y_values_Pn_cheb = Pn(x_values, xi_cheb, fi_cheb)
 
-        if not show_difference: plt.plot(x_values, y_values_Pn_cheb, label='Pn(x) (n={})'.format(i))
+        if not show_difference:
+            plt.plot(x_values, y_values_Pn_cheb, label='Pn(x) (n={})'.format(i))
 
         x_values_f = np.linspace(-1, 1, 1000)
         y_values_f = f(x_values_f)
-        if not show_difference: plt.plot(x_values_f, y_values_f, label='f(x)', color='black')
+        if not show_difference:
+            plt.plot(x_values_f, y_values_f, label='f(x)', color='black')
 
         absolute_error = np.abs(y_values_Pn_cheb - y_values_f)
-        if show_difference: plt.plot(x_values, absolute_error, label=f'|P{i}(x) - f(x)|')
+        if show_difference:
+            plt.plot(x_values, absolute_error, label=f'|P{i}(x) - f(x)|')
 
 
     plt.xlabel('x')
@@ -89,7 +92,7 @@ def max_errors():
 
 if __name__ == "__main__":
     show_error = False
-    is_chebyshev = True
+    is_chebyshev = False
     show_difference = True
     if show_error:
         max_errors()
