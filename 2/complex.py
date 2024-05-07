@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 
-MAX_ITERATIONS = 1000  
-EPSILON = 1e-6  
+MAX_ITERATIONS = 1000
+EPSILON = 1e-6
 
 def f(z):
     return z**3 - 1
@@ -37,7 +38,7 @@ def find_all_roots():
 def plot_newton_basins(roots):
     x_min, x_max = -2, 2
     y_min, y_max = -2, 2
-    n_points = 1000
+    n_points = 100
     X = np.linspace(x_min, x_max, n_points)
     Y = np.linspace(y_min, y_max, n_points)
     X, Y = np.meshgrid(X, Y)
@@ -48,11 +49,15 @@ def plot_newton_basins(roots):
     for i in range(Z.shape[0]):
         for j in range(Z.shape[1]):
             root = newton(Z[i, j])
+            root = round(root.real, 6) + round(root.imag, 6) * 1j
             if root in roots:
                 basin_colors[i, j] = list(roots).index(root) + 1
 
+    colors = ['red', 'blue', 'yellow']
+    cmap_custom = ListedColormap(colors)
+
     plt.figure(figsize=(10, 8))
-    plt.imshow(basin_colors, extent=(x_min, x_max, y_min, y_max), cmap='jet', origin='lower', alpha=0.9)
+    plt.imshow(basin_colors, extent=(x_min, x_max, y_min, y_max), cmap=cmap_custom, origin='lower')
     plt.xlabel('Re(z)')
     plt.ylabel('Im(z)')
     plt.show()
@@ -61,5 +66,3 @@ if __name__ == "__main__":
     roots = find_all_roots()
     print("Roots found:", roots)
     plot_newton_basins(roots)
-
-
