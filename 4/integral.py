@@ -1,48 +1,49 @@
-import numpy as np
+from math import sin, pi, e, sqrt, log
+from scipy import integrate
 
-def f1(x):
-    return np.exp(-np.sqrt(x)) + np.sin(x/10)
+def func(x):
+    if x == 0:
+        return pi
+    elif x == 1:
+        return 5 * pi
+    else:
+        return (sin(pi*(x**5)))/(x**5*(1-x))
 
-def f(x):
-    x = np.where(x == 0, 1e-4, x)
-    x = np.where(x == 1, 1 - 1e-4, x)
-    return np.sin(np.pi * x ** 5) / (x ** 5 * (1 - x))
+def func2(t):
+    if t == 0:
+        return 1
+    x = 1/t - 1
+    return e ** (-sqrt(x) + sin(x/10)) * (1/t**2)
 
-
-def x_t(t):
-    t = np.where(t == 0, 1e-4, t)
-    t = np.where(t == 1, 1 - 1e-4, t)
-    return t / (1 - t)
-
-def f_inf(t):
-    return f(x_t(t))
-
-
-def simpson(f, a, b, n):
-    if (np.isinf(b)):
-        return simpson(f_inf, 0, 1, n)
-    if n % 2 != 0:
-        n -= 1
-
+def simpson(func, a, b, n):
     h = (b - a) / n
-    x = np.linspace(a, b, n + 1)
-    y = f(x)
-    s = y[0] + y[-1] + 4 * np.sum(y[1:-1:2]) + 2 * np.sum(y[2:-1:2])
-    return h / 3 * s
+    result = func(a) + func(b)
+    for i in range(1, n):
+        if i % 2 == 0:
+            result += 2 * func(a + i * h)
+        else:
+            result += 4 * func(a + i * h)
+    result *= h / 3
+    return result
 
 def degree(f, a, b, n):
-    first = simpson(f, a, b, n)
-    second = simpson(f, a, b, n*2)
-    return np.log2(abs(first - 2) / abs(second - 2))
+    actual = integrate.quad(func2, a, b)[0]
+    first = simpson(f, a, b, n) - actual
+    second = simpson(f, a, b, n * 2) - actual
+    return (abs(log(first / second, 2)))
 
 
 a = 0
 b = 1
-n = 10**3
+n = 1000000
 
+integral1 = simpson(func, a, b, n)
+integral2 = simpson(func2, a, b, n)
 
-integral_value = simpson(f, a, b, n)
-print("Значение интеграла:", integral_value)
-
-actual_value = 8.03491067543358       # n = 10**8
-print(degree(f, a, b, n))
+print("Первый интеграл численно сам: ", integral1)
+print("Второй интеграл численно сам: ", integral2)
+print()
+print("Первый интеграл не сам: ", integrate.quad(func, a, b)[0])
+print("Второй интеграл не сам: ", integrate.quad(func2, a, b)[0])
+print()
+print("Порядок аппроксимации: ", degree(func2, a, b, n))
