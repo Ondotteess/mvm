@@ -1,5 +1,4 @@
 from math import sin, pi, e, sqrt, log
-from scipy import integrate
 
 def func(x):
     if x == 0:
@@ -26,24 +25,24 @@ def simpson(func, a, b, n):
     result *= h / 3
     return result
 
-def degree(f, a, b, n):
-    actual = integrate.quad(func2, a, b)[0]
-    first = simpson(f, a, b, n) - actual
-    second = simpson(f, a, b, n * 2) - actual
-    return (abs(log(first / second, 2)))
+
+def degree(f, a, b, n = 50, actual = 8.0349106754): #10 ** 10 accurancy
+    first = abs(simpson(f, a, b, n) - actual)
+    print(first)
+    second = abs(simpson(f, a, b, n * 2) - actual)
+    print(second)
+    return abs(log(second/first, 2))
 
 
 a = 0
 b = 1
-n = 1000000
+n = 10**2
 
 integral1 = simpson(func, a, b, n)
 integral2 = simpson(func2, a, b, n)
 
 print("Первый интеграл численно сам: ", integral1)
-print("Второй интеграл численно сам: ", integral2)
-print()
-print("Первый интеграл не сам: ", integrate.quad(func, a, b)[0])
-print("Второй интеграл не сам: ", integrate.quad(func2, a, b)[0])
-print()
-print("Порядок аппроксимации: ", degree(func2, a, b, n))
+print("Второй интеграл численно сам: ", integral2, "\n")
+print("Первый интеграл не сам: \t", 8.034910675416852580728551153065246161339118723845)
+print("Второй интеграл не сам: \t", 2.981003452558338248839706859225181957852512448493, "\n")
+print("Порядок аппроксимации: ", degree(func, a, b))
