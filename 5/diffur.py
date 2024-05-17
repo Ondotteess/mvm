@@ -54,14 +54,14 @@ def bounds(n: int):
 
     if is_derivative:
         left = 1
-        left_mat = [-1/h, 1/h, left]
+        # TODO: left_mat = ...
     else:
         left = 1
         left_mat = [1, 0, left]
 
     if is_derivative:
         right = 0
-        right_mat = [1/h, -1/h, right]
+        # TODO: right_mat = ...
     else:
         right = 0
         right_mat = [0, 1, right]
