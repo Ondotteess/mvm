@@ -9,7 +9,7 @@ def f1(t):
 
 
 def f2(t):
-    return np.sin(5.1 * t) + 0.002 * np.sin(5 * t)
+    return np.sin(5.1 * t) + 0.002 * np.sin(9 * t)
 
 
 def hann(N):
