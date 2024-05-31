@@ -111,15 +111,15 @@ def errors(a, b, c, d, solution):
     return x, error
 
 
-def degree(analytical, _bounds: tuple[float, float] = (1, 0)):
+def degree(analytical, _bounds: tuple[float, float], is_der):
     N = 2 ** 3
-    l, r = bounds(N, (False, False), (_bounds[0], _bounds[1]))
+    l, r = bounds(N, is_der, (_bounds[0], _bounds[1]))
     a, b, c, d = get_matrix(N, l, r)
     _, error = errors(a, b, c, d, analytical)
     max1 = np.max(error)
 
     N *= 2
-    l, r = bounds(N, (False, False), (_bounds[0], _bounds[1]))
+    l, r = bounds(N, is_der, (_bounds[0], _bounds[1]))
     a, b, c, d = get_matrix(N, l, r)
     _, error = errors(a, b, c, d, analytical)
     max2 = np.max(error)
@@ -177,7 +177,7 @@ def draw(x, y_approx, y_analytical):
     plt.show()
 
 N = 100
-is_der = (False, False)
+is_der = (True, False)
 values = (-2, 4)
 
 input_data = (values, is_der)
@@ -189,5 +189,5 @@ x_values = np.linspace(-pi/2, pi/2, N+1)
 y_analytical = [analytical_solution(x) for x in x_values]
 
 test(N)
-degree(analytical_solution, values)
+degree(analytical_solution, input_data[0], input_data[1])
 draw(x_values, y_approx, y_analytical)
